@@ -2,19 +2,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Play } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import heroImage from '@/assets/hero-consulting.jpg';
-
 const Hero = () => {
-  const { t } = useLanguage();
-
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  const {
+    t
+  } = useLanguage();
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={heroImage}
-          alt="IT Consulting Team"
-          className="w-full h-full object-cover"
-        />
+        <img src={heroImage} alt="IT Consulting Team" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-transparent"></div>
       </div>
 
@@ -29,18 +24,11 @@ const Hero = () => {
               {t('hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-white text-primary hover:bg-white/90 shadow-hero transition-all duration-300 hover:scale-105"
-              >
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-hero transition-all duration-300 hover:scale-105">
                 {t('hero.cta')}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white/30 text-white hover:bg-white/10 transition-all duration-300"
-              >
+              <Button variant="outline" size="lg" className="border-white/30 transition-all duration-300 bg-slate-50 text-blue-600">
                 <Play className="mr-2 h-5 w-5" />
                 {t('hero.learn-more')}
               </Button>
@@ -55,8 +43,6 @@ const Hero = () => {
           <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-bounce"></div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
