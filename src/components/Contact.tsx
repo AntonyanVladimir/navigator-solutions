@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mail, Calendar } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { BookingDialog } from './BookingDialog';
+
 const Contact = () => {
-  const {
-    t
-  } = useLanguage();
+  const { t } = useLanguage();
+  const [bookingOpen, setBookingOpen] = useState(false);
   return <section id="contact" className="py-20 bg-gradient-primary relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
@@ -22,7 +24,11 @@ const Contact = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-hero transition-all duration-300 hover:scale-105">
+            <Button 
+              size="lg" 
+              onClick={() => setBookingOpen(true)}
+              className="bg-white text-primary hover:bg-white/90 shadow-hero transition-all duration-300 hover:scale-105"
+            >
               <Calendar className="mr-2 h-5 w-5" />
               {t('contact.cta')}
             </Button>
@@ -33,6 +39,8 @@ const Contact = () => {
           </div>
         </div>
       </div>
+
+      <BookingDialog open={bookingOpen} onOpenChange={setBookingOpen} />
     </section>;
 };
 export default Contact;
