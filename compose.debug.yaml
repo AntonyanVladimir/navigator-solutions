@@ -18,6 +18,26 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      api:
+        condition: service_started
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: Host=db;Port=5432;Database=techconsult;Username=techconsult;Password=techconsult
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/src
+      - dotnet_nuget:/root/.nuget/packages
+    working_dir: /src
+    command: sh -c "dotnet restore && dotnet watch run --urls http://0.0.0.0:8080"
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     image: postgres:16-alpine
     environment:
@@ -36,4 +56,5 @@ services:
       start_period: 5s
 volumes:
   app_node_modules:
+  dotnet_nuget:
   postgres_data:

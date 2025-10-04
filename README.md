@@ -48,6 +48,7 @@ docker compose -f compose.debug.yaml up --build
 ```
 
 - App available at http://localhost:5173
+- Backend API available at http://localhost:8080 (Swagger UI when running in development)
 - PostgreSQL available at localhost:5432 (db/user/password: `techconsult`)
 - The `app` service runs `npm run dev -- --host 0.0.0.0`, so file changes on the host trigger hot reloads automatically.
 
@@ -59,6 +60,7 @@ docker compose up --build
 ```
 
 - App available at http://localhost:3000
+- Backend API available at http://localhost:8080
 - PostgreSQL reuses the same credentials as the dev stack.
 
 Both Compose files expose the same `DATABASE_URL` / `VITE_DATABASE_URL` connection string (`postgresql://techconsult:techconsult@db:5432/techconsult`) so the frontend and any future backend code can address the database via the internal service hostname `db`.

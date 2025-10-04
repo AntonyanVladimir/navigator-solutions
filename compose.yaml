@@ -13,6 +13,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      api:
+        condition: service_started
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: prod
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: Host=db;Port=5432;Database=techconsult;Username=techconsult;Password=techconsult
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     image: postgres:16-alpine
     environment:
