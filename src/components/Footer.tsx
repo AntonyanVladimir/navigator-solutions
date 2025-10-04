@@ -1,5 +1,6 @@
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import logo from '@/assets/techconsult-logo.svg';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -12,7 +13,12 @@ const Footer = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative z-10">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-primary/70">
+            <img
+              src={logo}
+              alt="TechConsult AI logo"
+              className="h-14 w-auto shadow-hero"
+            />
+            <h3 className="mt-6 text-sm font-semibold uppercase tracking-widest text-primary/70">
               {t('footer.companyTitle')}
             </h3>
             <div className="mt-4 h-1 w-16 rounded-full bg-primary/80" />

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 48" role="img" aria-labelledby="title desc">
+  <title id="title">TechConsult AI</title>
+  <desc id="desc">Stylized monogram shield with the initials TC and accompanying wordmark</desc>
+  <defs>
+    <linearGradient id="tc-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="hsl(214, 100%, 35%)" />
+      <stop offset="100%" stop-color="hsl(214, 100%, 25%)" />
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path fill="url(#tc-gradient)" d="M24 4c8.837 0 16 7.163 16 16v4.828a8 8 0 0 1-2.343 5.657l-11.172 11.172a4 4 0 0 1-5.657 0L9.657 30.485A8 8 0 0 1 7.314 24.828V20C7.314 11.163 14.477 4 23.314 4H24Z"/>
+    <path fill="#fff" d="M16.5 16h13a1.5 1.5 0 0 0 0-3h-13a1.5 1.5 0 0 0 0 3Zm0 9h6.5a6.5 6.5 0 0 0 0-13h-6.5a1.5 1.5 0 0 0 0 3H23a3.5 3.5 0 0 1 0 7h-6.5a1.5 1.5 0 0 0 0 3Z"/>
+    <text x="56" y="20" font-family="'Inter', 'Segoe UI', sans-serif" font-weight="600" font-size="16" fill="hsl(214, 100%, 25%)">TechConsult</text>
+    <text x="56" y="36" font-family="'Inter', 'Segoe UI', sans-serif" font-weight="500" font-size="14" fill="hsl(220, 9%, 46%)">AI Consulting</text>
+  </g>
+</svg>
