@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TechConsult.Api.Models;
+namespace TechConsult.Api.Dtos;
 
 public sealed class CreateAppointmentRequest
 {

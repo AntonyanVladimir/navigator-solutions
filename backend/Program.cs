@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using TechConsult.Api.Data;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,17 +22,8 @@ if (string.IsNullOrWhiteSpace(rawConnectionString))
     throw new InvalidOperationException("A PostgreSQL connection string was not provided. Set ConnectionStrings__Default or DATABASE_URL.");
 }
 
-var connectionString = new NpgsqlConnectionStringBuilder(rawConnectionString)
-{
-    // Ensure pooling is enabled for efficiency
-    Pooling = true,
-}.ConnectionString;
-
-builder.Services.AddSingleton(_ =>
-{
-    var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-    return dataSourceBuilder.Build();
-});
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(rawConnectionString));
 
 builder.Services.AddCors(options =>
 {
@@ -44,7 +35,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-await DatabaseInitializer.InitialiseAsync(app.Services, app.Lifetime.ApplicationStopping);
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {

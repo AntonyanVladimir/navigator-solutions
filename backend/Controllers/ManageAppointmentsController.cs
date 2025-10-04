@@ -1,7 +1,9 @@
-    using TechConsult.Api.Models;
-using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Npgsql;
+using Microsoft.EntityFrameworkCore;
+using TechConsult.Api.Data;
+using TechConsult.Api.Dtos;
+using TechConsult.Api.Entities;
+using TechConsult.Api.Mappers;
 
 namespace TechConsult.Api.Controllers;
 
@@ -9,36 +11,33 @@ namespace TechConsult.Api.Controllers;
 [Route("api/manage-appointments")]
 public class ManageAppointmentsController : ControllerBase
 {
-    private readonly NpgsqlDataSource _dataSource;
+    private readonly AppDbContext _db;
 
-    public ManageAppointmentsController(NpgsqlDataSource dataSource)
+    public ManageAppointmentsController(AppDbContext db)
     {
-        _dataSource = dataSource;
+        _db = db;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        const string sql = @"
-            SELECT id, title, scheduled_at AS ScheduledAt, contact_email AS ContactEmail, notes
-            FROM appointments
-            ORDER BY scheduled_at ASC;";
+        var appointments = await _db.Appointments
+            .AsNoTracking()
+            .OrderBy(a => a.ScheduledAt)
+            .Select(a => a.ToDto())
+            .ToListAsync(cancellationToken);
 
-        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
-        var appointments = await connection.QueryAsync<AppointmentDto>(new CommandDefinition(sql, cancellationToken: cancellationToken));
         return Ok(appointments);
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<AppointmentDto>> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        const string sql = @"
-            SELECT id, title, scheduled_at AS ScheduledAt, contact_email AS ContactEmail, notes
-            FROM appointments
-            WHERE id = @Id;";
-
-        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
-        var appointment = await connection.QuerySingleOrDefaultAsync<AppointmentDto>(new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken));
+        var appointment = await _db.Appointments
+            .AsNoTracking()
+            .Where(a => a.Id == id)
+            .Select(a => a.ToDto())
+            .FirstOrDefaultAsync(cancellationToken);
 
         return appointment is null ? NotFound() : Ok(appointment);
     }
@@ -52,22 +51,33 @@ public class ManageAppointmentsController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        const string sql = @"
-            INSERT INTO appointments (title, scheduled_at, contact_email, notes)
-            VALUES (@Title, @ScheduledAt, @ContactEmail, @Notes)
-            RETURNING id, title, scheduled_at AS ScheduledAt, contact_email AS ContactEmail, notes;";
+        var appointment = new Appointment
+        {
+            Title = request.Title,
+            ScheduledAt = request.ScheduledAt,
+            ContactEmail = request.ContactEmail,
+            Notes = request.Notes,
+        };
 
-        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
-        var newAppointment = await connection.QuerySingleAsync<AppointmentDto>(new CommandDefinition(sql, request, cancellationToken: cancellationToken));
-        return Created($"/api/manage-appointments/{newAppointment.Id}", newAppointment);
+        await _db.Appointments.AddAsync(appointment, cancellationToken);
+        await _db.SaveChangesAsync(cancellationToken);
+
+        return Created($"/api/manage-appointments/{appointment.Id}", appointment.ToDto());
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        const string sql = "DELETE FROM appointments WHERE id = @Id";
-        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
-        var affected = await connection.ExecuteAsync(new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken));
-        return affected == 0 ? NotFound() : NoContent();
+        var entity = await _db.Appointments.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+
+        if (entity is null)
+        {
+            return NotFound();
+        }
+
+        _db.Appointments.Remove(entity);
+        await _db.SaveChangesAsync(cancellationToken);
+
+        return NoContent();
     }
 }

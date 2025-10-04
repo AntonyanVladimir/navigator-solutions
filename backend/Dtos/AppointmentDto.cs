@@ -1,4 +1,4 @@
-namespace TechConsult.Api.Models;
+namespace TechConsult.Api.Dtos;
 
 public sealed record AppointmentDto
 {
