@@ -49,6 +49,18 @@ const translations = {
     'contact.cta': 'Termin vereinbaren',
     'contact.email': 'Email senden',
 
+    // Footer
+    'footer.companyTitle': 'TechConsult AI GmbH',
+    'footer.companyDescription': 'Ihr Partner für KI-gestützte Transformation und nachhaltiges Wachstum.',
+    'footer.contactsTitle': 'Kontakt',
+    'footer.addressTitle': 'Adresse',
+    'footer.contact.phone': 'Telefon',
+    'footer.contact.email': 'E-Mail',
+    'footer.address.street': 'Alexanderplatz 1',
+    'footer.address.city': '10178 Berlin',
+    'footer.address.country': 'Deutschland',
+    'footer.copy': '© {year} TechConsult AI. Alle Rechte vorbehalten.',
+
     // Booking
     'booking.title': 'Termin vereinbaren',
     'booking.step1.title': 'Wählen Sie eine Leistung',
@@ -125,6 +137,18 @@ const translations = {
     'contact.subtitle': 'Let\'s transform your business together',
     'contact.cta': 'Schedule Meeting',
     'contact.email': 'Send Email',
+
+    // Footer
+    'footer.companyTitle': 'TechConsult AI GmbH',
+    'footer.companyDescription': 'Your partner for AI-driven transformation and sustainable growth.',
+    'footer.contactsTitle': 'Contacts',
+    'footer.addressTitle': 'Address',
+    'footer.contact.phone': 'Phone',
+    'footer.contact.email': 'Email',
+    'footer.address.street': 'Alexanderplatz 1',
+    'footer.address.city': '10178 Berlin',
+    'footer.address.country': 'Germany',
+    'footer.copy': '© {year} TechConsult AI. All rights reserved.',
 
     // Booking
     'booking.title': 'Schedule Meeting',
