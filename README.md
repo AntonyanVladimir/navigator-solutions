@@ -36,6 +36,33 @@ npm i
 npm run dev
 ```
 
+## Run with Docker
+
+This project ships with Docker Compose recipes that provision the React app together with a PostgreSQL database. The development stack mounts your working tree so edits are reflected instantly in the browser without restarting the containers.
+
+### Development (hot reload)
+
+```sh
+# Rebuild images and boot the dev stack (Vite + PostgreSQL)
+docker compose -f compose.debug.yaml up --build
+```
+
+- App available at http://localhost:5173
+- PostgreSQL available at localhost:5432 (db/user/password: `techconsult`)
+- The `app` service runs `npm run dev -- --host 0.0.0.0`, so file changes on the host trigger hot reloads automatically.
+
+### Production-style preview
+
+```sh
+# Build the production bundle and serve it with PostgreSQL
+docker compose up --build
+```
+
+- App available at http://localhost:3000
+- PostgreSQL reuses the same credentials as the dev stack.
+
+Both Compose files expose the same `DATABASE_URL` / `VITE_DATABASE_URL` connection string (`postgresql://techconsult:techconsult@db:5432/techconsult`) so the frontend and any future backend code can address the database via the internal service hostname `db`.
+
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).

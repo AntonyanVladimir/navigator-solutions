@@ -1,12 +1,39 @@
 services:
-  vitereactshadcnts:
-    image: vitereactshadcnts
+  app:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
+      target: dev
     environment:
       NODE_ENV: development
+      DATABASE_URL: postgresql://techconsult:techconsult@db:5432/techconsult
+      VITE_DATABASE_URL: postgresql://techconsult:techconsult@db:5432/techconsult
+      CHOKIDAR_USEPOLLING: "true"
     ports:
-      - 3000:3000
-      - 9229:9229
-    command: ["node", "--inspect=0.0.0.0:9229", "index.js"]
+      - "5173:5173"
+    volumes:
+      - .:/usr/src/app
+      - app_node_modules:/usr/src/app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: techconsult
+      POSTGRES_USER: techconsult
+      POSTGRES_PASSWORD: techconsult
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U techconsult -d techconsult"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+volumes:
+  app_node_modules:
+  postgres_data:
