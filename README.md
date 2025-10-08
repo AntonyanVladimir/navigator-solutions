@@ -38,32 +38,32 @@ npm run dev
 
 ## Run with Docker
 
-This project ships with Docker Compose recipes that provision the React app together with a PostgreSQL database. The development stack mounts your working tree so edits are reflected instantly in the browser without restarting the containers.
+This project ships with Docker Compose recipes that provision the React app together with a MySQL database. The development stack mounts your working tree so edits are reflected instantly in the browser without restarting the containers.
 
 ### Development (hot reload)
 
 ```sh
-# Rebuild images and boot the dev stack (Vite + PostgreSQL)
+# Rebuild images and boot the dev stack (Vite + MySQL)
 docker compose -f compose.debug.yaml up --build
 ```
 
 - App available at http://localhost:5173
 - Backend API available at http://localhost:8080 (Swagger UI when running in development)
-- PostgreSQL available at localhost:5432 (db/user/password: `techconsult`)
+- MySQL available at localhost:3306 (db/user/password: `techconsult`)
 - The `app` service runs `npm run dev -- --host 0.0.0.0`, so file changes on the host trigger hot reloads automatically.
 
 ### Production-style preview
 
 ```sh
-# Build the production bundle and serve it with PostgreSQL
+# Build the production bundle and serve it with MySQL
 docker compose up --build
 ```
 
 - App available at http://localhost:3000
 - Backend API available at http://localhost:8080
-- PostgreSQL reuses the same credentials as the dev stack.
+- MySQL reuses the same credentials as the dev stack.
 
-Both Compose files expose the same `DATABASE_URL` / `VITE_DATABASE_URL` connection string (`postgresql://techconsult:techconsult@db:5432/techconsult`) so the frontend and any future backend code can address the database via the internal service hostname `db`.
+Both Compose files expose the same `DATABASE_URL` / `VITE_DATABASE_URL` connection string (`mysql://techconsult:techconsult@db:3306/techconsult`) so the frontend and any future backend code can address the database via the internal service hostname `db`.
 
 **Edit a file directly in GitHub**
 

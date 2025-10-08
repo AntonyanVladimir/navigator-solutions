@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using TechConsult.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,11 +21,23 @@ var rawConnectionString = builder.Configuration.GetConnectionString("Default")
 
 if (string.IsNullOrWhiteSpace(rawConnectionString))
 {
-    throw new InvalidOperationException("A PostgreSQL connection string was not provided. Set ConnectionStrings__Default or DATABASE_URL.");
+    throw new InvalidOperationException("A MySQL connection string was not provided. Set ConnectionStrings__Default or DATABASE_URL.");
+}
+
+var configuredServerVersion = builder.Configuration["MYSQL_SERVER_VERSION"];
+ServerVersion serverVersion;
+
+if (!string.IsNullOrWhiteSpace(configuredServerVersion))
+{
+    serverVersion = ServerVersion.Parse(configuredServerVersion);
+}
+else
+{
+    serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(rawConnectionString));
+    options.UseMySql(rawConnectionString, serverVersion));
 
 builder.Services.AddCors(options =>
 {
@@ -38,7 +52,19 @@ var app = builder.Build();
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await context.Database.MigrateAsync();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var pendingMigrations = (await context.Database.GetPendingMigrationsAsync()).ToList();
+
+    if (pendingMigrations.Count > 0)
+    {
+        logger.LogInformation("Applying {Count} pending migrations: {Migrations}", pendingMigrations.Count, string.Join(", ", pendingMigrations));
+        await context.Database.MigrateAsync();
+        logger.LogInformation("Database migrations applied successfully.");
+    }
+    else
+    {
+        logger.LogInformation("Database is up to date; no migrations to apply.");
+    }
 }
 
 if (app.Environment.IsDevelopment())

@@ -6,8 +6,8 @@ services:
       target: dev
     environment:
       NODE_ENV: development
-      DATABASE_URL: postgresql://techconsult:techconsult@db:5432/techconsult
-      VITE_DATABASE_URL: postgresql://techconsult:techconsult@db:5432/techconsult
+      DATABASE_URL: mysql://techconsult:techconsult@db:3306/techconsult
+      VITE_DATABASE_URL: mysql://techconsult:techconsult@db:3306/techconsult
       CHOKIDAR_USEPOLLING: "true"
     ports:
       - "5173:5173"
@@ -27,7 +27,8 @@ services:
       target: dev
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__Default: Host=db;Port=5432;Database=techconsult;Username=techconsult;Password=techconsult
+      ConnectionStrings__Default: Server=db;Port=3306;Database=techconsult;User=techconsult;Password=techconsult
+      MYSQL_SERVER_VERSION: 8.0.36-mysql
     ports:
       - "8080:8080"
     volumes:
@@ -39,17 +40,18 @@ services:
       db:
         condition: service_healthy
   db:
-    image: postgres:16-alpine
+    image: mysql:8.0
     environment:
-      POSTGRES_DB: techconsult
-      POSTGRES_USER: techconsult
-      POSTGRES_PASSWORD: techconsult
+      MYSQL_DATABASE: techconsult
+      MYSQL_USER: techconsult
+      MYSQL_PASSWORD: techconsult
+      MYSQL_ROOT_PASSWORD: techconsult
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U techconsult -d techconsult"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u \"$${MYSQL_USER}\" -p\"$${MYSQL_PASSWORD}\" --silent"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -57,4 +59,4 @@ services:
 volumes:
   app_node_modules:
   dotnet_nuget:
-  postgres_data:
+  mysql_data:
