@@ -12,5 +12,6 @@ public static class AppointmentMapper
         ScheduledAt = entity.ScheduledAt,
         ContactEmail = entity.ContactEmail,
         Notes = entity.Notes,
+        DurationInMinutes = entity.DurationInMinutes,
     };
 }

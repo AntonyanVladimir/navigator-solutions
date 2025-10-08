@@ -7,4 +7,5 @@ public sealed record AppointmentDto
     public DateTimeOffset ScheduledAt { get; init; }
     public string? ContactEmail { get; init; }
     public string? Notes { get; init; }
+    public int DurationInMinutes { get; init; } // Duration in minutes
 }

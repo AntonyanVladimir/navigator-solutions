@@ -16,4 +16,7 @@ public sealed class CreateAppointmentRequest
 
     [StringLength(2000)]
     public string? Notes { get; init; }
+    
+    [Range(0, 1440)]
+    public int Duration { get; init; }
 }

@@ -57,6 +57,7 @@ public class ManageAppointmentsController : ControllerBase
             ScheduledAt = request.ScheduledAt,
             ContactEmail = request.ContactEmail,
             Notes = request.Notes,
+            DurationInMinutes = request.Duration
         };
 
         await _db.Appointments.AddAsync(appointment, cancellationToken);
