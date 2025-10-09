@@ -54,8 +54,11 @@ public class ManageAppointmentsController : ControllerBase
         var appointment = new Appointment
         {
             Title = request.Title,
+            CallerFirstName = request.CallerFirstName.Trim(),
+            CallerLastName = request.CallerLastName.Trim(),
+            Type = request.Type,
             ScheduledAt = request.ScheduledAt,
-            ContactEmail = request.ContactEmail,
+            ContactEmail = request.ContactEmail.Trim(),
             Notes = request.Notes,
             DurationInMinutes = request.Duration
         };

@@ -21,11 +21,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .IsRequired()
                 .HasColumnName("title")
                 .HasMaxLength(200);
+            entity.Property(e => e.CallerFirstName)
+                .IsRequired()
+                .HasColumnName("caller_first_name")
+                .HasMaxLength(100);
+            entity.Property(e => e.CallerLastName)
+                .IsRequired()
+                .HasColumnName("caller_last_name")
+                .HasMaxLength(100);
             entity.Property(e => e.ScheduledAt)
                 .HasColumnName("scheduled_at")
                 .HasColumnType("datetime(6)");
+            entity.Property(e => e.DurationInMinutes)
+                .HasColumnName("duration_in_minutes");
+            entity.Property(e => e.Type)
+                .HasColumnName("appointment_type")
+                .HasConversion<int>();
             entity.Property(e => e.ContactEmail)
                 .HasColumnName("contact_email")
+                .IsRequired()
                 .HasMaxLength(320);
             entity.Property(e => e.Notes)
                 .HasColumnName("notes")
