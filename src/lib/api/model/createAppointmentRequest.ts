@@ -4,6 +4,7 @@
  * TechConsult.Api
  * OpenAPI spec version: 1.0
  */
+import type { AppointmentType } from './appointmentType';
 
 export interface CreateAppointmentRequest {
   /**
@@ -12,8 +13,22 @@ export interface CreateAppointmentRequest {
    */
   title: string;
   scheduledAt: string;
-  /** @nullable */
-  contactEmail?: string | null;
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  callerFirstName: string;
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  callerLastName: string;
+  type?: AppointmentType;
+  /**
+   * @minLength 0
+   * @maxLength 320
+   */
+  contactEmail: string;
   /**
    * @minLength 0
    * @maxLength 2000

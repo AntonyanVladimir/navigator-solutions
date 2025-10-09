@@ -6,4 +6,5 @@
  */
 
 export * from './appointmentDto';
+export * from './appointmentType';
 export * from './createAppointmentRequest';

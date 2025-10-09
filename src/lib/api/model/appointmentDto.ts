@@ -4,12 +4,18 @@
  * TechConsult.Api
  * OpenAPI spec version: 1.0
  */
+import type { AppointmentType } from './appointmentType';
 
 export interface AppointmentDto {
   id?: number;
   /** @nullable */
   title?: string | null;
   scheduledAt?: string;
+  /** @nullable */
+  callerFirstName?: string | null;
+  /** @nullable */
+  callerLastName?: string | null;
+  type?: AppointmentType;
   /** @nullable */
   contactEmail?: string | null;
   /** @nullable */
