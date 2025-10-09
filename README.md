@@ -65,6 +65,13 @@ docker compose up --build
 
 Both Compose files expose the same `DATABASE_URL` / `VITE_DATABASE_URL` connection string (`mysql://techconsult:techconsult@db:3306/techconsult`) so the frontend and any future backend code can address the database via the internal service hostname `db`.
 
+## Generate API client
+
+- Make sure the backend is running and exposing Swagger at `http://localhost:8080/swagger/v1/swagger.json` (the default when using Docker Compose above).
+- Run `npm run orval` to regenerate typed DTOs and service functions into `src/lib/api`.
+- Use `npm run orval:watch` during backend development to automatically refresh the generated files whenever the OpenAPI spec changes.
+- You can override the source spec by setting `ORVAL_OPENAPI_URL` before running the script if the API is available on a different host/port.
+
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).
