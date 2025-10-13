@@ -102,24 +102,77 @@ const Admin = () => {
     });
   }, [appointmentsQuery.data]);
 
+  const stats = useMemo(() => {
+    const total = appointments.length;
+    const now = Date.now();
+    const futureAppointments = appointments.filter(
+      (appointment) =>
+        appointment.scheduledAt && new Date(appointment.scheduledAt).getTime() > now
+    );
+    const next = futureAppointments[0] ?? null;
+
+    return {
+      total,
+      upcoming: futureAppointments.length,
+      next,
+    };
+  }, [appointments]);
+
   const isLoading = appointmentsQuery.isLoading;
   const isError = appointmentsQuery.isError;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card/40 backdrop-blur">
-        <div className="container mx-auto flex flex-col gap-2 px-15 py-6 sm:flex-row sm:items-center sm:justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background text-foreground">
+      <header className="border-b border-border/60 bg-gradient-to-r from-emerald-500/15 via-primary/10 to-transparent backdrop-blur supports-[backdrop-filter]:backdrop-blur">
+        <div className="container mx-auto flex flex-col gap-2 px-4 py-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-muted-foreground uppercase tracking-wide">Admin Area</p>
-            <h1 className="text-2xl font-semibold">Appointments</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] px-20 text-muted-foreground">
+              Admin Area
+            </p>
+            <h1 className="text-3xl font-semibold tracking-tight px-20">Appointments</h1>
           </div>
-          <Button variant="ghost" asChild>
+          <Button variant="ghost" asChild className="hover:bg-primary/10 hover:text-primary">
             <Link to="/">← Back to website</Link>
           </Button>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-10">
+      <main className="container mx-auto px-20 py-10 space-y-8">
+        {!isLoading && !isError && (
+          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-500 dark:text-emerald-300">
+                Total Appointments
+              </p>
+              <p className="mt-2 text-3xl font-semibold text-emerald-700 dark:text-emerald-100">
+                {stats.total}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-sky-500/30 bg-sky-500/10 p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-sky-500 dark:text-sky-300">
+                Upcoming
+              </p>
+              <p className="mt-2 text-3xl font-semibold text-sky-700 dark:text-sky-100">
+                {stats.upcoming}
+              </p>
+              <p className="text-xs text-sky-600/80 dark:text-sky-200/80">
+                Counting appointments scheduled in the future
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border/70 bg-card/80 p-5 shadow-sm sm:col-span-2 xl:col-span-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Next Appointment
+              </p>
+              <p className="mt-2 text-lg font-semibold text-foreground">
+                {stats.next ? formatSchedule(stats.next.scheduledAt) : '—'}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {stats.next ? formatAppointmentType(stats.next.type) : 'No upcoming bookings'}
+              </p>
+            </div>
+          </section>
+        )}
+
         {isLoading ? (
           <div className="rounded-lg border border-dashed border-border p-8 text-center text-muted-foreground">
             Loading appointments…
@@ -129,11 +182,11 @@ const Admin = () => {
             We could not load appointments. Please refresh to try again.
           </div>
         ) : appointments.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-8 text-center text-muted-foreground">
+          <div className="rounded-lg border border-dashed border-border/70 bg-card/70 p-8 text-center text-muted-foreground">
             No appointments scheduled yet.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-sm">
+          <div className="overflow-x-auto rounded-xl border border-border/60 bg-card/90 shadow-xl">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -157,7 +210,10 @@ const Admin = () => {
                       : '—';
 
                   return (
-                    <TableRow key={id || appointment.scheduledAt}>
+                    <TableRow
+                      key={id || appointment.scheduledAt}
+                      className="transition-colors hover:bg-muted/40"
+                    >
                       <TableCell className="font-medium">
                         {formatSchedule(appointment.scheduledAt)}
                       </TableCell>
