@@ -3,15 +3,26 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Globe, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import logo from '@/assets/techconsult-logo.svg';
+
+
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
+  const { user, logout } = useAuth();
 
   const toggleLanguage = () => {
     setLanguage(language === 'de' ? 'en' : 'de');
   };
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
+  };
+
+  const displayName = user ? (user.email.split('@')[0] || user.email) : '';
 
   return (
     <header className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
@@ -41,12 +52,7 @@ const Header = () => {
             <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">
               {t('nav.contact')}
             </a>
-            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">
-              {t('nav.login')}
-            </Link>
-            <Link to="/register" className="text-muted-foreground hover:text-primary transition-colors">
-              {t('nav.register')}
-            </Link>
+            
           </nav>
 
           {/* Language Toggle & CTA */}
@@ -63,12 +69,35 @@ const Header = () => {
             <Button className="bg-gradient-primary hover:opacity-90 shadow-card">
               {t('hero.cta')}
             </Button>
-            <Button variant="outline" asChild>
-              <Link to="/login">{t('nav.login')}</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to="/admin">{t('nav.admin')}</Link>
-            </Button>
+            {user && user.role === "Admin" ? (
+              <>
+                <span className="text-sm font-medium text-primary">
+                  {`${t('nav.hello')} ${displayName}`}
+                </span>
+                <Button variant="outline" asChild>
+                  <Link to="/admin">{t('nav.admin')}</Link>
+                </Button>
+                <Button variant="secondary" onClick={handleLogout}>
+                  {t('nav.logout')}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" asChild>
+                  <Link to="/login">{t('nav.login')}</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/register">{t('nav.register')}</Link>
+                </Button>
+                {user && (
+              <>
+                <Button variant="outline" asChild>
+                  <Link to="/admin">{t('nav.admin')}</Link>
+                </Button>
+              </>
+            )}
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -115,20 +144,28 @@ const Header = () => {
               >
                 {t('nav.admin')}
               </Link>
-              <Link
-                to="/login"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t('nav.login')}
-              </Link>
-              <Link
-                to="/register"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t('nav.register')}
-              </Link>
+              {user ? (
+                <div className="rounded-lg border border-border/70 bg-card/50 px-4 py-3 text-left text-sm font-medium text-primary">
+                  {`${t('nav.hello')} ${displayName}`}
+                </div>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('nav.login')}
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('nav.register')}
+                  </Link>
+                </>
+              )}
               <div className="flex items-center space-x-4 pt-4 border-t border-border">
                 <Button
                   variant="ghost"
@@ -142,12 +179,36 @@ const Header = () => {
                 <Button className="bg-gradient-primary hover:opacity-90 shadow-card">
                   {t('hero.cta')}
                 </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/login">{t('nav.login')}</Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/admin">{t('nav.admin')}</Link>
-                </Button>
+                {user ? (
+                  <>
+                    <Button variant="outline" asChild>
+                      <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                        {t('nav.admin')}
+                      </Link>
+                    </Button>
+                    <Button variant="secondary" onClick={handleLogout}>
+                      {t('nav.logout')}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" asChild>
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                        {t('nav.login')}
+                      </Link>
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                        {t('nav.register')}
+                      </Link>
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                        {t('nav.admin')}
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

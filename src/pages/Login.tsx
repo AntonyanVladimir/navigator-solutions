@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { loginUser, persistUser } from "@/lib/api/auth";
+import { loginUser } from "@/lib/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,7 +21,7 @@ const Login = () => {
 
     try {
       const user = await loginUser({ email, password });
-      persistUser(user);
+      setUser(user);
       toast.success("Successfully signed in!");
       navigate(user.role === "Admin" ? "/admin" : "/");
     } catch (error) {

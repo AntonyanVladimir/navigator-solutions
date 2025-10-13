@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { AppUserRole, persistUser, registerUser } from "@/lib/api/auth";
+import { AppUserRole, registerUser } from "@/lib/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<AppUserRole>("RegularUser");
@@ -20,7 +22,7 @@ const Register = () => {
 
     try {
       const user = await registerUser({ email, password, role });
-      persistUser(user);
+      setUser(user);
       toast.success("Account created successfully!");
       navigate(user.role === "Admin" ? "/admin" : "/");
     } catch (error) {
