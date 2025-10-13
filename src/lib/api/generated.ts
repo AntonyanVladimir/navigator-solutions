@@ -26,7 +26,7 @@ export const getGetApiManageAppointmentsUrl = () => {
 
   
 
-  return `/api/manage-appointments`
+  return `http://localhost:8080/api/manage-appointments`
 }
 
 export const getApiManageAppointments = async ( options?: RequestInit): Promise<getApiManageAppointmentsResponse> => {
@@ -65,7 +65,7 @@ export const getPostApiManageAppointmentsUrl = () => {
 
   
 
-  return `/api/manage-appointments`
+  return `http://localhost:8080/api/manage-appointments`
 }
 
 export const postApiManageAppointments = async (createAppointmentRequest: CreateAppointmentRequest, options?: RequestInit): Promise<postApiManageAppointmentsResponse> => {
@@ -105,7 +105,7 @@ export const getGetApiManageAppointmentsIdUrl = (id: number,) => {
 
   
 
-  return `/api/manage-appointments/${id}`
+  return `http://localhost:8080/api/manage-appointments/${id}`
 }
 
 export const getApiManageAppointmentsId = async (id: number, options?: RequestInit): Promise<getApiManageAppointmentsIdResponse> => {
@@ -144,7 +144,7 @@ export const getDeleteApiManageAppointmentsIdUrl = (id: number,) => {
 
   
 
-  return `/api/manage-appointments/${id}`
+  return `http://localhost:8080/api/manage-appointments/${id}`
 }
 
 export const deleteApiManageAppointmentsId = async (id: number, options?: RequestInit): Promise<deleteApiManageAppointmentsIdResponse> => {
@@ -183,7 +183,7 @@ export const getGetHealthUrl = () => {
 
   
 
-  return `/health`
+  return `http://localhost:8080/health`
 }
 
 export const getHealth = async ( options?: RequestInit): Promise<getHealthResponse> => {

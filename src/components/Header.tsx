@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Globe, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -56,6 +57,9 @@ const Header = () => {
             <Button className="bg-gradient-primary hover:opacity-90 shadow-card">
               {t('hero.cta')}
             </Button>
+            <Button variant="outline" asChild>
+              <Link to="/admin">{t('nav.admin')}</Link>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -95,6 +99,13 @@ const Header = () => {
               >
                 {t('nav.contact')}
               </a>
+              <Link
+                to="/admin"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('nav.admin')}
+              </Link>
               <div className="flex items-center space-x-4 pt-4 border-t border-border">
                 <Button
                   variant="ghost"
@@ -107,6 +118,9 @@ const Header = () => {
                 </Button>
                 <Button className="bg-gradient-primary hover:opacity-90 shadow-card">
                   {t('hero.cta')}
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/admin">{t('nav.admin')}</Link>
                 </Button>
               </div>
             </div>
