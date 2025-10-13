@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using TechConsult.Api.Data;
+using TechConsult.Api.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,8 @@ else
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(rawConnectionString, serverVersion));
+
+builder.Services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
 
 builder.Services.AddCors(options =>
 {

@@ -17,6 +17,8 @@ const translations = {
     'nav.about': 'Über uns',
     'nav.contact': 'Kontakt',
     'nav.admin': 'Admin Bereich',
+    'nav.login': 'Anmelden',
+    'nav.register': 'Registrieren',
     
     // Hero
     'hero.title': 'KI-Lösungen für Ihr Unternehmen',
@@ -109,6 +111,8 @@ const translations = {
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.admin': 'Admin Area',
+    'nav.login': 'Log In',
+    'nav.register': 'Register',
     
     // Hero
     'hero.title': 'AI Solutions for Your Business',

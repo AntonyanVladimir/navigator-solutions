@@ -41,6 +41,12 @@ const Header = () => {
             <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">
               {t('nav.contact')}
             </a>
+            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">
+              {t('nav.login')}
+            </Link>
+            <Link to="/register" className="text-muted-foreground hover:text-primary transition-colors">
+              {t('nav.register')}
+            </Link>
           </nav>
 
           {/* Language Toggle & CTA */}
@@ -56,6 +62,9 @@ const Header = () => {
             </Button>
             <Button className="bg-gradient-primary hover:opacity-90 shadow-card">
               {t('hero.cta')}
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/login">{t('nav.login')}</Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="/admin">{t('nav.admin')}</Link>
@@ -106,6 +115,20 @@ const Header = () => {
               >
                 {t('nav.admin')}
               </Link>
+              <Link
+                to="/login"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('nav.login')}
+              </Link>
+              <Link
+                to="/register"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('nav.register')}
+              </Link>
               <div className="flex items-center space-x-4 pt-4 border-t border-border">
                 <Button
                   variant="ghost"
@@ -118,6 +141,9 @@ const Header = () => {
                 </Button>
                 <Button className="bg-gradient-primary hover:opacity-90 shadow-card">
                   {t('hero.cta')}
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/login">{t('nav.login')}</Link>
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/admin">{t('nav.admin')}</Link>
