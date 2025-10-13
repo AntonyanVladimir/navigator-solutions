@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
 import { loginUser } from "@/lib/api/auth";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,10 +24,13 @@ const Login = () => {
     try {
       const user = await loginUser({ email, password });
       setUser(user);
-      toast.success("Successfully signed in!");
+      toast.success(t("auth.login.success"));
       navigate(user.role === "Admin" ? "/admin" : "/");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to sign in.";
+      const message =
+        error instanceof Error && error.message.trim().length > 0
+          ? error.message
+          : t("auth.login.error");
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -36,19 +41,19 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/40 to-background flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md border-border/60 shadow-xl">
         <CardHeader className="space-y-3">
-          <CardTitle className="text-3xl font-semibold text-center">Welcome back</CardTitle>
+          <CardTitle className="text-3xl font-semibold text-center">{t("auth.login.title")}</CardTitle>
           <CardDescription className="text-center text-muted-foreground">
-            Sign in to manage appointments and view your dashboard.
+            {t("auth.login.subtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("auth.email.label")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t("auth.email.placeholder")}
                 autoComplete="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
@@ -57,11 +62,11 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.password.label")}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="********"
+                placeholder={t("auth.password.placeholder")}
                 autoComplete="current-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -71,19 +76,19 @@ const Login = () => {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Signing in…" : "Sign in"}
+              {isSubmitting ? t("auth.login.submitting") : t("auth.login.submit")}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-2 text-center text-sm text-muted-foreground">
           <p>
-            Don&apos;t have an account?{" "}
+            {t("auth.login.noAccountPrompt")}{" "}
             <Link to="/register" className="text-primary underline-offset-4 hover:underline">
-              Create one
+              {t("auth.login.createAccount")}
             </Link>
           </p>
           <Link to="/" className="text-primary underline-offset-4 hover:underline">
-            ← Back to home
+            {t("auth.login.backHome")}
           </Link>
         </CardFooter>
       </Card>
