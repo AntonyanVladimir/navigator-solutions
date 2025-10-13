@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { de, enUS } from 'date-fns/locale';
-import { Calendar, Clock, User, Mail, Phone, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Dialog,
@@ -23,16 +23,21 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Badge } from '@/components/ui/badge';
+import { toast } from '@/components/ui/sonner';
+import { postApiManageAppointments } from '@/lib/api/generated';
+import type { AppointmentType } from '@/lib/api/model';
+import { AppointmentType as AppointmentTypeEnum } from '@/lib/api/model';
 
 interface BookingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+type ServiceKey = 'ai-consulting' | 'web-development' | 'saas-development';
+
 interface BookingFormData {
-  service: string;
-  date: Date;
+  service: ServiceKey | '';
+  date: Date | undefined;
   time: string;
   firstName: string;
   lastName: string;
@@ -47,6 +52,24 @@ const AVAILABLE_TIMES = [
   '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
   '16:00', '16:30', '17:00'
 ];
+
+const SERVICE_CONFIG: Record<ServiceKey, { type: AppointmentType; duration: number; titleKey: string }> = {
+  'ai-consulting': {
+    type: AppointmentTypeEnum.AiConsulting,
+    duration: 60,
+    titleKey: 'services.ai.title',
+  },
+  'web-development': {
+    type: AppointmentTypeEnum.WebDevelopment,
+    duration: 45,
+    titleKey: 'services.web.title',
+  },
+  'saas-development': {
+    type: AppointmentTypeEnum.SaasDevelopment,
+    duration: 60,
+    titleKey: 'services.saas.title',
+  },
+};
 
 export const BookingDialog = ({ open, onOpenChange }: BookingDialogProps) => {
   const { t, language } = useLanguage();
@@ -68,14 +91,62 @@ export const BookingDialog = ({ open, onOpenChange }: BookingDialogProps) => {
   });
 
   const onSubmit = async (data: BookingFormData) => {
+    if (!data.service || !data.date || !data.time) {
+      return;
+    }
+
+    const serviceConfig = SERVICE_CONFIG[data.service as ServiceKey];
+    if (!serviceConfig) {
+      toast.error(t('booking.toast.error'));
+      return;
+    }
+
+    const [hourString, minuteString] = data.time.split(':');
+    const hours = Number(hourString);
+    const minutes = Number(minuteString);
+
+    if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+      toast.error(t('booking.toast.error'));
+      return;
+    }
+
+    const scheduledAt = new Date(data.date);
+    scheduledAt.setHours(hours, minutes, 0, 0);
+
+    const notesParts = [
+      data.message?.trim() ? `Message:\n${data.message.trim()}` : null,
+      data.company?.trim() ? `Company: ${data.company.trim()}` : null,
+      data.phone?.trim() ? `Phone: ${data.phone.trim()}` : null,
+    ].filter(Boolean) as string[];
+
+    const notes = notesParts.length ? notesParts.join('\n\n') : null;
+
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log('Booking data:', data);
-    setIsSubmitting(false);
-    onOpenChange(false);
-    setStep(1);
-    form.reset();
+    try {
+      const response = await postApiManageAppointments({
+        title: t(serviceConfig.titleKey),
+        scheduledAt: scheduledAt.toISOString(),
+        callerFirstName: data.firstName.trim(),
+        callerLastName: data.lastName.trim(),
+        type: serviceConfig.type,
+        contactEmail: data.email.trim(),
+        notes: notes ?? undefined,
+        duration: serviceConfig.duration,
+      });
+
+      const status = response.status as number;
+      if (status >= 300) {
+        throw new Error(`Unexpected status ${status}`);
+      }
+
+      toast.success(t('booking.toast.success'));
+      handleClose(false);
+    } catch (error) {
+      console.error('Failed to book appointment', error);
+      toast.error(t('booking.toast.error'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const nextStep = () => {
@@ -86,10 +157,12 @@ export const BookingDialog = ({ open, onOpenChange }: BookingDialogProps) => {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleClose = () => {
-    onOpenChange(false);
-    setStep(1);
-    form.reset();
+  const handleClose = (nextOpen: boolean) => {
+    onOpenChange(nextOpen);
+    if (!nextOpen) {
+      setStep(1);
+      form.reset();
+    }
   };
 
   const renderStep1 = () => (

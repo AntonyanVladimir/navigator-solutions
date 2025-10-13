@@ -108,7 +108,7 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/40 backdrop-blur">
-        <div className="container mx-auto flex flex-col gap-2 px-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="container mx-auto flex flex-col gap-2 px-15 py-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm text-muted-foreground uppercase tracking-wide">Admin Area</p>
             <h1 className="text-2xl font-semibold">Appointments</h1>

@@ -100,6 +100,8 @@ const translations = {
     'booking.validation.lastName': 'Nachname ist erforderlich',
     'booking.validation.email': 'E-Mail ist erforderlich',
     'booking.validation.emailFormat': 'Bitte geben Sie eine gültige E-Mail an',
+    'booking.toast.success': 'Termin erfolgreich gebucht!',
+    'booking.toast.error': 'Der Termin konnte nicht gebucht werden. Bitte versuchen Sie es erneut.',
   },
   en: {
     // Header
@@ -190,6 +192,8 @@ const translations = {
     'booking.validation.lastName': 'Last name is required',
     'booking.validation.email': 'Email is required',
     'booking.validation.emailFormat': 'Please enter a valid email address',
+    'booking.toast.success': 'Appointment booked successfully!',
+    'booking.toast.error': 'We could not book the appointment. Please try again.',
   }
 };
 
